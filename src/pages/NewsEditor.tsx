@@ -9,7 +9,9 @@ import MarkdownEditor from "@/components/ui/markdown-editor";
 import { ArrowLeft, PlusCircle } from "lucide-react";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import { useToast } from "@/components/ui/use-toast";
-import { News, initialNews } from '@/data/news';
+import NoticiaService, { type Noticia, type CreateNoticiaDTO, type UpdateNoticiaDTO } from '@/services/noticia.service';
+import { CategoriaService, type Categoria } from '@/services/categoria.service';
+import { useAuth } from "@/contexts/AuthContext";
 
 interface VideoInfo {
     id: string;
@@ -17,19 +19,30 @@ interface VideoInfo {
     description?: string;
 }
 
+interface FormData {
+    titulo: string;
+    extracto: string;
+    contenido: string;
+    imagen: string;
+    categoria_id: number;
+    video_id?: string;
+    video_titulo?: string;
+    video_descripcion?: string;
+}
+
 export default function NewsEditor() {
     const { id } = useParams();
     const navigate = useNavigate();
     const { toast } = useToast();
-    const [formData, setFormData] = useState<News>({
-        id: 0,
-        title: "",
-        excerpt: "",
-        content: "",
-        image: "",
-        author: "",
-        created_at: new Date().toISOString(),
-        category: "",
+    const { user: currentUser } = useAuth();
+    const [loading, setLoading] = useState(true);
+    const [categories, setCategories] = useState<Categoria[]>([]);
+    const [formData, setFormData] = useState<FormData>({
+        titulo: "",
+        extracto: "",
+        contenido: "",
+        imagen: "",
+        categoria_id: 0
     });
     const [videoData, setVideoData] = useState<VideoInfo>({
         id: "",
@@ -37,26 +50,59 @@ export default function NewsEditor() {
         description: ""
     });
 
+    const noticiaService = NoticiaService;
+    const categoriaService = CategoriaService.getInstance();
+
     useEffect(() => {
-        if (id) {
-            // Buscar la noticia en el array de noticias
-            const newsItem = initialNews.find(item => item.id === parseInt(id));
-            if (newsItem) {
-                setFormData(newsItem);
-                if (newsItem.video) {
-                    setVideoData(newsItem.video);
-                }
-            } else {
-                // Si no se encuentra la noticia, mostrar un mensaje y redirigir
-                toast({
-                    variant: "destructive",
-                    title: "Error",
-                    description: "No se encontró la noticia especificada.",
-                });
-                navigate('/news');
+        loadCategories();
+    }, [id]);
+
+    const loadCategories = async () => {
+        try {
+            const data = await categoriaService.getCategorias();
+            setCategories(data);
+            if (id) {
+                loadNoticia(parseInt(id));
             }
+            setLoading(false);
+        } catch (error) {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: "No se pudieron cargar las categorías"
+            });
+            setLoading(false);
         }
-    }, [id, navigate, toast]);
+    };
+
+    const loadNoticia = async (noticiaId: number) => {
+        try {
+            const noticia = await noticiaService.getNoticia(noticiaId);
+
+            setFormData({
+                titulo: noticia.title,
+                extracto: noticia.excerpt,
+                contenido: noticia.content,
+                imagen: noticia.image,
+                categoria_id: noticia.categoria_id
+            });
+
+            if (noticia.video) {
+                setVideoData({
+                    id: noticia.video.id,
+                    title: noticia.video.title,
+                    description: noticia.video.description
+                });
+            }
+        } catch (error) {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: "No se pudo cargar la noticia"
+            });
+            navigate('/news');
+        }
+    };
 
     const extractYoutubeId = (url: string) => {
         // Normalizar la URL
@@ -104,36 +150,52 @@ export default function NewsEditor() {
         }
     };
 
-    const handleSubmit = () => {
-        // Aquí manejarías la creación/actualización de la noticia
-        // Por ahora solo mostraremos un mensaje de éxito
-        if (id) {
-            // Actualizar noticia existente
-            const index = initialNews.findIndex(item => item.id === parseInt(id));
-            if (index !== -1) {
-                initialNews[index] = {
-                    ...formData,
-                    video: videoData.id ? videoData : undefined
-                };
+    const handleSubmit = async () => {
+        try {
+            // Validar campos requeridos
+            if (!formData.titulo || !formData.extracto || !formData.contenido || !formData.imagen || !formData.categoria_id) {
+                toast({
+                    variant: "destructive",
+                    title: "Error",
+                    description: "Por favor completa todos los campos requeridos"
+                });
+                return;
             }
-        } else {
-            // Crear nueva noticia
-            const newNews = {
-                ...formData,
-                id: initialNews.length + 1,
-                created_at: new Date().toISOString(),
-                slug: formData.title.toLowerCase().replace(/ /g, '-'),
-                video: videoData.id ? videoData : undefined
-            };
-            initialNews.push(newNews);
-        }
 
-        toast({
-            title: id ? "Noticia actualizada" : "Noticia creada",
-            description: `La noticia ha sido ${id ? "actualizada" : "creada"} exitosamente.`,
-        });
-        navigate('/news');
+            const noticiaData: CreateNoticiaDTO | UpdateNoticiaDTO = {
+                ...formData,
+                video_id: videoData.id || undefined,
+                video_titulo: videoData.title || undefined,
+                video_descripcion: videoData.description || undefined
+            };
+
+            if (id) {
+                await noticiaService.updateNoticia(parseInt(id), noticiaData as UpdateNoticiaDTO);
+                toast({
+                    title: "Noticia actualizada",
+                    description: "La noticia ha sido actualizada exitosamente."
+                });
+            } else {
+                await noticiaService.createNoticia(noticiaData as CreateNoticiaDTO);
+                toast({
+                    title: "Noticia creada",
+                    description: "La noticia ha sido creada exitosamente."
+                });
+            }
+            navigate('/news');
+        } catch (error: any) {
+            console.error('Error al guardar noticia:', error);
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: error.response?.data?.message || "Ocurrió un error al guardar la noticia"
+            });
+        }
     };
+
+    if (loading) {
+        return <div>Cargando...</div>;
+    }
 
     return (
         <div className="w-full px-0 sm:px-4 md:container mx-auto py-6 space-y-8">
@@ -162,8 +224,8 @@ export default function NewsEditor() {
                 <div className="grid gap-4">
                     <Label>Título</Label>
                     <Input
-                        value={formData.title}
-                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                        value={formData.titulo}
+                        onChange={(e) => setFormData({ ...formData, titulo: e.target.value })}
                         placeholder="Título de la noticia"
                     />
                 </div>
@@ -171,58 +233,52 @@ export default function NewsEditor() {
                 <div className="grid gap-4">
                     <Label>Extracto</Label>
                     <Input
-                        value={formData.excerpt}
-                        onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                        value={formData.extracto}
+                        onChange={(e) => setFormData({ ...formData, extracto: e.target.value })}
                         placeholder="Breve descripción de la noticia"
                     />
                 </div>
 
-                <div className="grid gap-4">
-                    <Label>Imagen de portada</Label>
-                    <Input
-                        value={formData.image}
-                        onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                        placeholder="URL de la imagen"
-                    />
-                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-4">
+                        <Label>Imagen de portada</Label>
+                        <Input
+                            value={formData.imagen}
+                            onChange={(e) => setFormData({ ...formData, imagen: e.target.value })}
+                            placeholder="URL de la imagen"
+                        />
+                    </div>
 
-                <div className="grid gap-4">
-                    <Label>Autor</Label>
-                    <Input
-                        value={formData.author}
-                        onChange={(e) => setFormData({ ...formData, author: e.target.value })}
-                        placeholder="Nombre del autor"
-                    />
-                </div>
-
-                <div className="grid gap-4">
-                    <Label>Categoría</Label>
-                    <Select
-                        value={formData.category}
-                        onValueChange={(value) => setFormData({ ...formData, category: value })}
-                    >
-                        <SelectTrigger>
-                            <SelectValue placeholder="Selecciona una categoría" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="Tecnología">Tecnología</SelectItem>
-                            <SelectItem value="Ciencia">Ciencia</SelectItem>
-                            <SelectItem value="Deportes">Deportes</SelectItem>
-                            <SelectItem value="Cultura">Cultura</SelectItem>
-                        </SelectContent>
-                    </Select>
+                    <div className="space-y-4">
+                        <Label>Categoría</Label>
+                        <Select
+                            value={formData.categoria_id ? formData.categoria_id.toString() : ""}
+                            onValueChange={(value) => setFormData({ ...formData, categoria_id: parseInt(value) })}
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Selecciona una categoría para la noticia" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {categories.map((category) => (
+                                    <SelectItem key={category.id} value={category.id.toString()}>
+                                        {category.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </div>
 
                 <div className="grid gap-4">
                     <Label>Contenido</Label>
                     <MarkdownEditor
-                        content={formData.content}
-                        onChange={(content) => setFormData({ ...formData, content: content })}
+                        content={formData.contenido}
+                        onChange={(content) => setFormData({ ...formData, contenido: content })}
                         formData={{
-                            title: formData.title,
-                            category: formData.category,
-                            author: formData.author,
-                            image: formData.image
+                            title: formData.titulo,
+                            category: categories.find(cat => cat.id === formData.categoria_id)?.name || '',
+                            author: currentUser?.nombre || '',
+                            image: formData.imagen
                         }}
                         videoData={videoData.id ? {
                             id: videoData.id,

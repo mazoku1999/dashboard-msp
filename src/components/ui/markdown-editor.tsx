@@ -177,8 +177,9 @@ const MarkdownEditor = ({
 
     const parseContent = (markdown: string) => {
         // First convert images to HTML with our custom classes
-        const withImages = markdown.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, src) => {
-            return `<img src="${src}" alt="${alt}" class="rounded-md border w-full max-w-[500px] h-auto mx-auto my-4" />`;
+        const withImages = markdown.replace(/!\[(.*?)\]\((.*?)(?:\s+"(.*?)")?\)/g, (match, alt, src, title) => {
+            const titleAttr = title ? ` title="${title.replace(/"/g, '&quot;')}"` : '';
+            return `<img src="${src}" alt="${alt}"${titleAttr} class="rounded-md border w-full max-w-[500px] h-auto mx-auto my-4" />`;
         });
 
         // Then convert the rest of the markdown
@@ -310,7 +311,9 @@ const MarkdownEditor = ({
 
     const handleImageSubmit = () => {
         if (imageUrl) {
-            const imageHtml = `<img src="${imageUrl}" alt="${imageAlt}" title="${imageTitle}" class="rounded-md border max-w-full h-auto" />`;
+            // Escape quotes in title if present
+            const escapedTitle = imageTitle ? imageTitle.replace(/"/g, '&quot;') : '';
+            const imageHtml = `<img src="${imageUrl}" alt="${imageAlt}" ${escapedTitle ? `title="${escapedTitle}"` : ''} class="rounded-md border max-w-full h-auto" />`;
             editor?.commands.insertContent(imageHtml);
             setShowImageDialog(false);
             setImageUrl('');

@@ -15,6 +15,7 @@ import { RainbowButton } from "@/components/ui/rainbow-button";
 import { useToast } from "@/components/ui/use-toast";
 import VideoService, { type CreateVideoDTO, type UpdateVideoDTO } from "@/services/video.service";
 import { CategoriaService, type Categoria } from "@/services/categoria.service";
+import { Label } from "@/components/ui/label";
 
 // Función para extraer el ID de YouTube de una URL
 const getYoutubeVideoId = (url: string) => {
@@ -221,7 +222,7 @@ export default function VideoEditor() {
     };
 
     return (
-        <div className="w-full max-w-[1400px] mx-auto px-4 py-6 space-y-8">
+        <div className="w-full max-w-[1400px] mx-auto px-4 py-6">
             <div className="flex flex-col sm:flex-row gap-4 mb-6">
                 <Button
                     onClick={() => navigate('/videos')}
@@ -241,7 +242,7 @@ export default function VideoEditor() {
                 </div>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-6 md:grid-cols-2 mb-16">
                 <div className="space-y-4">
                     <div className="space-y-2">
                         <label className="text-sm font-medium">URL de YouTube</label>
@@ -263,18 +264,6 @@ export default function VideoEditor() {
                             value={formData.titulo}
                             onChange={handleInputChange}
                             placeholder="Título del video"
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium">Descripción</label>
-                        <Textarea
-                            name="descripcion"
-                            value={formData.descripcion}
-                            onChange={handleInputChange}
-                            placeholder="Describe el contenido del video"
-                            className="resize-none"
-                            rows={4}
                         />
                     </div>
 
@@ -323,7 +312,7 @@ export default function VideoEditor() {
                 <div className="space-y-4">
                     <label className="text-sm font-medium">Vista previa</label>
                     {formData.youtube_id ? (
-                        <div className="space-y-4">
+                        <div>
                             <div className="relative rounded-lg overflow-hidden">
                                 <div style={{ paddingBottom: '56.25%' }}>
                                     <iframe
@@ -332,14 +321,6 @@ export default function VideoEditor() {
                                         allowFullScreen
                                     />
                                 </div>
-                            </div>
-                            <div className="space-y-2">
-                                <h3 className="font-medium line-clamp-2">
-                                    {formData.titulo}
-                                </h3>
-                                <p className="text-sm text-muted-foreground line-clamp-3">
-                                    {formData.descripcion}
-                                </p>
                             </div>
                         </div>
                     ) : (
@@ -356,7 +337,7 @@ export default function VideoEditor() {
                 </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row justify-end gap-4 mt-8 pt-6 border-t">
+            <div className="flex flex-col sm:flex-row justify-end gap-4 mt-16 pt-6 border-t">
                 <Button
                     onClick={() => navigate('/videos')}
                     variant="outline"

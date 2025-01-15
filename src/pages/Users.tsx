@@ -259,19 +259,24 @@ export default function UsersPage() {
                             </Select>
                         </div>
                     </div>
-                    <DialogFooter>
+                    <DialogFooter className="flex flex-col sm:flex-row gap-2">
                         <Button
                             variant="outline"
                             onClick={() => {
                                 setIsOpen(false);
                                 setFormData(null);
                             }}
+                            className="w-full h-11 py-6"
                         >
                             Cancelar
                         </Button>
-                        <Button onClick={handleSubmit}>
-                            {formMode === 'create' ? 'Crear Usuario' : 'Guardar Cambios'}
-                        </Button>
+                        <RainbowButton
+                            onClick={handleSubmit}
+                            className="w-full gap-2 h-11 py-6"
+                        >
+                            <PlusCircle className="h-4 w-4" />
+                            {formMode === 'create' ? "Crear Usuario" : "Guardar Cambios"}
+                        </RainbowButton>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

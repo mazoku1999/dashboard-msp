@@ -21,7 +21,7 @@ import {
 import { useToast } from '@/components/ui/use-toast';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Plus, MoreVertical, Pencil, Trash2, CheckCircle, XCircle } from 'lucide-react';
+import { Plus, MoreVertical, Pencil, Trash2, CheckCircle, XCircle, PlusCircle } from 'lucide-react';
 import {
     Dialog,
     DialogContent,
@@ -33,6 +33,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { RainbowButton } from "@/components/ui/rainbow-button";
 
 const Categories = () => {
     const [categories, setCategories] = useState<Categoria[]>([]);
@@ -159,6 +160,15 @@ const Categories = () => {
         category.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const handleCloseDialog = () => {
+        setShowDialog(false);
+        setEditingCategory(null);
+        setFormData({
+            nombre: '',
+            descripcion: ''
+        });
+    };
+
     return (
         <div className="w-full max-w-[1400px] mx-auto px-4 py-6 space-y-8">
             <div className="flex flex-col gap-4">
@@ -169,10 +179,19 @@ const Categories = () => {
                             Gestiona las categorías para noticias y videos.
                         </p>
                     </div>
-                    <Button onClick={handleNew} className="w-full sm:w-auto gap-2">
-                        <Plus className="h-4 w-4" />
-                        Nueva Categoría
-                    </Button>
+                    <div className="flex items-center gap-4">
+                        <RainbowButton onClick={() => {
+                            setEditingCategory(null);
+                            setFormData({
+                                nombre: '',
+                                descripcion: ''
+                            });
+                            setShowDialog(true);
+                        }} className="gap-2">
+                            <PlusCircle className="h-4 w-4" />
+                            Agregar Nueva
+                        </RainbowButton>
+                    </div>
                 </div>
 
                 <div className="flex items-center">
@@ -298,13 +317,21 @@ const Categories = () => {
                             />
                         </div>
                     </div>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setShowDialog(false)}>
+                    <DialogFooter className="flex flex-col sm:flex-row gap-2">
+                        <Button
+                            variant="outline"
+                            onClick={handleCloseDialog}
+                            className="w-full h-11 py-6"
+                        >
                             Cancelar
                         </Button>
-                        <Button onClick={handleSubmit}>
-                            {editingCategory ? 'Actualizar' : 'Crear'}
-                        </Button>
+                        <RainbowButton
+                            onClick={handleSubmit}
+                            className="w-full gap-2 h-11 py-6"
+                        >
+                            <PlusCircle className="h-4 w-4" />
+                            {editingCategory ? "Guardar Cambios" : "Crear Categoría"}
+                        </RainbowButton>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

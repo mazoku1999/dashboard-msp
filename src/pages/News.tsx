@@ -17,7 +17,9 @@ import {
 import { Avatar } from "@/components/ui/avatar";
 import { Pencil, Trash, PlusCircle } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
-import { News, initialNews } from '@/data/news';
+import { useToast } from "@/components/ui/use-toast";
+import NoticiaService, { type Noticia } from '@/services/noticia.service';
+import { useAuth } from "@/contexts/AuthContext";
 
 // Componente de carga con skeleton
 const NewsCardSkeleton = () => (
@@ -113,8 +115,8 @@ const getColorFromString = (str: string) => {
 
 // Componente de tarjeta de noticia optimizado
 const NewsCard = memo(({ item, onEdit, onDelete }: {
-    item: News;
-    onEdit: (item: News) => void;
+    item: Noticia;
+    onEdit: (item: Noticia) => void;
     onDelete: (id: number) => void;
 }) => {
     // Memoizar handlers para evitar re-renders
@@ -157,10 +159,9 @@ const NewsCard = memo(({ item, onEdit, onDelete }: {
                     <div className="pt-4 border-t flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <Avatar className="h-8 w-8">
-                                <img
-                                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${item.author}`}
-                                    alt={item.author}
-                                />
+                                <div className="bg-primary/10 text-primary w-full h-full flex items-center justify-center text-sm font-semibold">
+                                    {item.author[0]}
+                                </div>
                             </Avatar>
                             <div className="grid gap-0.5 text-xs">
                                 <span className="font-medium">{item.author}</span>
@@ -204,11 +205,34 @@ const NewsCard = memo(({ item, onEdit, onDelete }: {
 });
 
 export default function NewsPage() {
-    const [news, setNews] = useState<News[]>(initialNews);
+    const [news, setNews] = useState<Noticia[]>([]);
+    const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
     const [newsToDelete, setNewsToDelete] = useState<number | null>(null);
     const navigate = useNavigate();
+    const { toast } = useToast();
+    const noticiaService = NoticiaService;
+    const { user: currentUser } = useAuth();
+
+    useEffect(() => {
+        loadNews();
+    }, []);
+
+    const loadNews = async () => {
+        try {
+            const data = await noticiaService.getNoticias();
+            setNews(data);
+        } catch (error) {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: "No se pudieron cargar las noticias"
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
 
     // Memoizar la lista filtrada
     const filteredNews = useMemo(() =>
@@ -219,7 +243,7 @@ export default function NewsPage() {
         [news, searchTerm]
     );
 
-    const handleEdit = (item: News) => {
+    const handleEdit = (item: Noticia) => {
         navigate(`/news/edit/${item.id}`);
     };
 
@@ -228,12 +252,25 @@ export default function NewsPage() {
         setIsDeleteOpen(true);
     };
 
-    const confirmDelete = () => {
+    const confirmDelete = async () => {
         if (newsToDelete) {
-            setNews(news.filter(item => item.id !== newsToDelete));
-            setNewsToDelete(null);
+            try {
+                await noticiaService.deleteNoticia(newsToDelete);
+                toast({
+                    title: "Éxito",
+                    description: "La noticia ha sido eliminada correctamente"
+                });
+                loadNews();
+            } catch (error) {
+                toast({
+                    variant: "destructive",
+                    title: "Error",
+                    description: "No se pudo eliminar la noticia"
+                });
+            }
         }
         setIsDeleteOpen(false);
+        setNewsToDelete(null);
     };
 
     return (
@@ -278,7 +315,7 @@ export default function NewsPage() {
 
                     <div className="flex items-center">
                         <Input
-                            placeholder="Buscar por título..."
+                            placeholder="Buscar por título o categoría..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="max-w-sm"
@@ -291,56 +328,24 @@ export default function NewsPage() {
                         gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 320px), 1fr))',
                         contain: 'content'
                     }}>
-                    {filteredNews.map((item) => (
-                        <Card
-                            key={item.id}
-                            className="group relative overflow-hidden transition-all duration-200 hover:-translate-y-2 hover:shadow-xl will-change-transform flex flex-col border hover:border-2 hover:border-primary"
-                        >
-                            <div className="relative h-[200px] overflow-hidden">
-                                <Badge className="absolute top-4 left-4 z-10">
-                                    {item.category}
-                                </Badge>
-                                <OptimizedImage src={item.image} alt={item.title} />
-                            </div>
-                            <div className="flex flex-col flex-grow p-6">
-                                <h3 className="text-2xl font-semibold mb-2">{item.title}</h3>
-                                <p className="text-muted-foreground mb-4 line-clamp-2">{item.excerpt}</p>
-                                <div className="mt-auto pt-4 border-t flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <Avatar className="h-8 w-8">
-                                            <div className="bg-primary/10 text-primary w-full h-full flex items-center justify-center text-sm font-semibold">
-                                                {item.author[0]}
-                                            </div>
-                                        </Avatar>
-                                        <div>
-                                            <p className="text-sm font-medium">{item.author}</p>
-                                            <p className="text-xs text-muted-foreground">
-                                                {new Date(item.created_at).toLocaleDateString()}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={() => handleEdit(item)}
-                                            className="h-8 w-8 hover:border hover:border-primary hover:bg-primary hover:text-primary-foreground"
-                                        >
-                                            <Pencil className="h-4 w-4" />
-                                        </Button>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={() => handleDelete(item.id)}
-                                            className="h-8 w-8 text-destructive hover:text-destructive-foreground hover:bg-destructive"
-                                        >
-                                            <Trash className="h-4 w-4" />
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-                        </Card>
-                    ))}
+                    {loading ? (
+                        Array.from({ length: 6 }).map((_, index) => (
+                            <NewsCardSkeleton key={index} />
+                        ))
+                    ) : filteredNews.length === 0 ? (
+                        <div className="col-span-full text-center py-12">
+                            <p className="text-muted-foreground">No hay noticias que mostrar</p>
+                        </div>
+                    ) : (
+                        filteredNews.map((item) => (
+                            <NewsCard
+                                key={item.id}
+                                item={item}
+                                onEdit={handleEdit}
+                                onDelete={handleDelete}
+                            />
+                        ))
+                    )}
                 </div>
             </div>
         </>

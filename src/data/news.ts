@@ -21,44 +21,7 @@ export const initialNews: News[] = [
         id: 1,
         title: "Introducción a la Inteligencia Artificial",
         excerpt: "Una visión general sobre la IA y su impacto en la sociedad moderna",
-        content: `# Introducción a la Inteligencia Artificial
-
-![Robot con cerebro digital](https://images.unsplash.com/photo-1677442136019-21780ecad995)
-
-La inteligencia artificial está transformando el mundo de maneras que antes solo podíamos imaginar en la ciencia ficción. En este artículo, exploraremos los aspectos más relevantes de esta tecnología revolucionaria.
-
-## ¿Qué es la IA?
-
-La Inteligencia Artificial (IA) es la simulación de procesos de inteligencia humana por parte de máquinas, especialmente sistemas informáticos. Estos procesos incluyen:
-
-* Aprendizaje (adquisición de información y reglas)
-* Razonamiento (uso de reglas para llegar a conclusiones)
-* Autocorrección (mejora continua)
-
-### Aplicaciones Actuales
-
-La IA está presente en múltiples sectores:
-
-1. **Medicina**: Diagnóstico y tratamiento
-2. **Finanzas**: Detección de fraude
-3. **Transporte**: Vehículos autónomos
-4. **Entretenimiento**: Recomendaciones personalizadas
-
-## El Futuro de la IA
-
-> "La IA será la tecnología más transformadora en la historia de la humanidad" - Sundar Pichai
-
-### Desafíos y Oportunidades
-
-* **Éticos**: Privacidad y toma de decisiones
-* **Laborales**: Transformación del empleo
-* **Sociales**: Impacto en la interacción humana
-
-![Futuro de la IA](https://images.unsplash.com/photo-1485827404703-89b55fcc595e)
-
-## Conclusión
-
-La IA continuará evolucionando y transformando nuestra sociedad. Es crucial mantener un equilibrio entre innovación y responsabilidad ética.`,
+        content: `# Introducción a la Inteligencia Artificial`,
         image: "https://images.unsplash.com/photo-1677442136019-21780ecad995",
         author: "María García",
         created_at: new Date().toISOString(),

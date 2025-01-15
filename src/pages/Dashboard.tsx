@@ -1,9 +1,9 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
-    DollarSignIcon,
+    NewspaperIcon,
     UsersIcon,
-    CreditCardIcon,
+    PlayCircleIcon,
     ActivityIcon,
     TrendingUpIcon,
     Monitor,
@@ -13,29 +13,29 @@ import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/components/ui/chart';
 
 const chartData = [
-    { month: "Ene", desktop: 2486, mobile: 2180 },
-    { month: "Feb", desktop: 3105, mobile: 2800 },
-    { month: "Mar", desktop: 2837, mobile: 2620 },
-    { month: "Abr", desktop: 2973, mobile: 2790 },
-    { month: "May", desktop: 3209, mobile: 2930 },
-    { month: "Jun", desktop: 3214, mobile: 2940 },
-    { month: "Jul", desktop: 3373, mobile: 3100 },
-    { month: "Ago", desktop: 3186, mobile: 2980 },
-    { month: "Sep", desktop: 3337, mobile: 3050 },
-    { month: "Oct", desktop: 3273, mobile: 2990 },
-    { month: "Nov", desktop: 3414, mobile: 3140 },
-    { month: "Dic", desktop: 3373, mobile: 3110 },
+    { month: "Ene", noticias: 486, videos: 180 },
+    { month: "Feb", noticias: 505, videos: 280 },
+    { month: "Mar", noticias: 437, videos: 262 },
+    { month: "Abr", noticias: 473, videos: 279 },
+    { month: "May", noticias: 509, videos: 293 },
+    { month: "Jun", noticias: 514, videos: 294 },
+    { month: "Jul", noticias: 573, videos: 310 },
+    { month: "Ago", noticias: 486, videos: 298 },
+    { month: "Sep", noticias: 537, videos: 305 },
+    { month: "Oct", noticias: 573, videos: 299 },
+    { month: "Nov", noticias: 614, videos: 314 },
+    { month: "Dic", noticias: 573, videos: 311 },
 ];
 
 const chartConfig = {
-    desktop: {
-        label: "Desktop",
-        icon: Monitor,
+    noticias: {
+        label: "Noticias",
+        icon: NewspaperIcon,
         color: "hsl(var(--chart-1))",
     },
-    mobile: {
-        label: "Mobile",
-        icon: Smartphone,
+    videos: {
+        label: "Videos",
+        icon: PlayCircleIcon,
         color: "hsl(var(--chart-2))",
     },
 };
@@ -63,42 +63,42 @@ const DashboardContent = () => {
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                 <Card className="p-6">
                     <div className="flex items-center gap-2">
-                        <DollarSignIcon className="h-4 w-4 text-muted-foreground" />
-                        <h3 className="text-sm font-medium">Ingresos Totales</h3>
+                        <NewspaperIcon className="h-4 w-4 text-muted-foreground" />
+                        <h3 className="text-sm font-medium">Total Noticias</h3>
                     </div>
                     <div className="mt-3">
-                        <div className="text-2xl font-bold">$45,231.89</div>
-                        <p className="text-xs text-green-500">+20.1% este mes</p>
+                        <div className="text-2xl font-bold">8</div>
+                        <p className="text-xs text-green-500">+2 este mes</p>
                     </div>
                 </Card>
                 <Card className="p-6">
                     <div className="flex items-center gap-2">
                         <UsersIcon className="h-4 w-4 text-muted-foreground" />
-                        <h3 className="text-sm font-medium">Suscripciones</h3>
+                        <h3 className="text-sm font-medium">Editores</h3>
                     </div>
                     <div className="mt-3">
-                        <div className="text-2xl font-bold">+2,350</div>
-                        <p className="text-xs text-green-500">+180.1% este mes</p>
+                        <div className="text-2xl font-bold">5</div>
+                        <p className="text-xs text-green-500">+2 este mes</p>
                     </div>
                 </Card>
                 <Card className="p-6">
                     <div className="flex items-center gap-2">
-                        <CreditCardIcon className="h-4 w-4 text-muted-foreground" />
-                        <h3 className="text-sm font-medium">Ventas</h3>
+                        <PlayCircleIcon className="h-4 w-4 text-muted-foreground" />
+                        <h3 className="text-sm font-medium">Videos</h3>
                     </div>
                     <div className="mt-3">
-                        <div className="text-2xl font-bold">+12,234</div>
-                        <p className="text-xs text-green-500">+19% este mes</p>
+                        <div className="text-2xl font-bold">8</div>
+                        <p className="text-xs text-green-500">+5 este mes</p>
                     </div>
                 </Card>
                 <Card className="p-6">
                     <div className="flex items-center gap-2">
                         <ActivityIcon className="h-4 w-4 text-muted-foreground" />
-                        <h3 className="text-sm font-medium">Activos Ahora</h3>
+                        <h3 className="text-sm font-medium">Visitas Hoy</h3>
                     </div>
                     <div className="mt-3">
-                        <div className="text-2xl font-bold">+573</div>
-                        <p className="text-xs text-green-500">+201 última hora</p>
+                        <div className="text-2xl font-bold">73</div>
+                        <p className="text-xs text-green-500">+2 última hora</p>
                     </div>
                 </Card>
             </div>
@@ -107,8 +107,8 @@ const DashboardContent = () => {
                 <Card className="p-6 col-span-4">
                     <div className="flex items-center justify-between mb-4">
                         <div>
-                            <h3 className="text-lg font-medium">Visitas por Dispositivo</h3>
-                            <p className="text-sm text-muted-foreground">Visitas mensuales por tipo de dispositivo</p>
+                            <h3 className="text-lg font-medium">Contenido Publicado</h3>
+                            <p className="text-sm text-muted-foreground">Publicaciones mensuales por tipo</p>
                         </div>
                         <div className="flex items-center gap-2">
                             <Button variant="outline" size="sm">Mensual</Button>
@@ -136,13 +136,13 @@ const DashboardContent = () => {
                                 <ChartTooltip content={<ChartTooltipContent />} />
                                 <ChartLegend content={<ChartLegendContent />} />
                                 <Bar
-                                    dataKey="desktop"
-                                    fill="var(--color-desktop)"
+                                    dataKey="noticias"
+                                    fill="var(--color-noticias)"
                                     radius={[4, 4, 0, 0]}
                                 />
                                 <Bar
-                                    dataKey="mobile"
-                                    fill="var(--color-mobile)"
+                                    dataKey="videos"
+                                    fill="var(--color-videos)"
                                     radius={[4, 4, 0, 0]}
                                 />
                             </BarChart>
@@ -153,25 +153,25 @@ const DashboardContent = () => {
                 <Card className="p-6 col-span-3">
                     <div className="flex items-center justify-between mb-4">
                         <div>
-                            <h3 className="text-lg font-medium">Ventas Recientes</h3>
-                            <p className="text-sm text-muted-foreground">Has realizado 265 ventas este mes</p>
+                            <h3 className="text-lg font-medium">Últimas Publicaciones</h3>
+                            <p className="text-sm text-muted-foreground">Se han realizado 39 publicaciones este mes</p>
                         </div>
                     </div>
 
                     <div className="space-y-8">
                         {[
-                            { name: 'Olivia Martin', email: 'olivia.martin@email.com', amount: '$1,999.00' },
-                            { name: 'Jackson Lee', email: 'jackson.lee@email.com', amount: '$39.00' },
-                            { name: 'Isabella Nguyen', email: 'isabella.nguyen@email.com', amount: '$299.00' },
-                            { name: 'William Kim', email: 'will@email.com', amount: '$99.00' },
-                            { name: 'Sofia Davis', email: 'sofia.davis@email.com', amount: '$39.00' }
-                        ].map((sale, i) => (
+                            { title: 'Nuevo avance tecnológico', type: 'Noticia', category: 'Tecnología', date: '2024-03-15' },
+                            { title: 'Tutorial: React Avanzado', type: 'Video', category: 'Programación', date: '2024-03-14' },
+                            { title: 'Lanzamiento de producto', type: 'Noticia', category: 'Negocios', date: '2024-03-13' },
+                            { title: 'Entrevista con expertos', type: 'Video', category: 'Tecnología', date: '2024-03-12' },
+                            { title: 'Actualización importante', type: 'Noticia', category: 'Software', date: '2024-03-11' }
+                        ].map((item, i) => (
                             <div key={i} className="flex items-center">
                                 <div className="space-y-1 flex-1">
-                                    <p className="text-sm font-medium leading-none">{sale.name}</p>
-                                    <p className="text-sm text-muted-foreground">{sale.email}</p>
+                                    <p className="text-sm font-medium leading-none">{item.title}</p>
+                                    <p className="text-sm text-muted-foreground">{item.type} - {item.category}</p>
                                 </div>
-                                <div className="text-sm font-medium">{sale.amount}</div>
+                                <div className="text-sm text-muted-foreground">{item.date}</div>
                             </div>
                         ))}
                     </div>

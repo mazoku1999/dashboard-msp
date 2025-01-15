@@ -11,6 +11,7 @@ export interface Noticia {
     created_at: string;
     status: 'borrador' | 'publicado' | 'archivado';
     category: string;
+    categoria_id: number;
     video?: {
         id: string;
         title: string;

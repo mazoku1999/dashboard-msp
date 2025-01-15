@@ -67,6 +67,7 @@ export const getNoticia = async (req: Request, res: Response) => {
                 n.fecha_creacion as created_at,
                 n.estado as status,
                 c.nombre as category,
+                n.categoria_id,
                 n.video_id,
                 n.video_titulo as video_title,
                 n.video_descripcion as video_description
@@ -94,6 +95,7 @@ export const getNoticia = async (req: Request, res: Response) => {
             created_at: noticia.created_at,
             status: noticia.status,
             category: noticia.category,
+            categoria_id: noticia.categoria_id,
             video: noticia.video_id ? {
                 id: noticia.video_id,
                 title: noticia.video_title,
@@ -150,6 +152,7 @@ export const getNoticiaBySlug = async (req: Request, res: Response) => {
             created_at: noticia.created_at,
             status: noticia.status,
             category: noticia.category,
+            categoria_id: noticia.categoria_id,
             video: noticia.video_id ? {
                 id: noticia.video_id,
                 title: noticia.video_title,

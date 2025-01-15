@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insertar Noticias</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 20px auto;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #log {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            height: 300px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+        }
+
+        .success {
+            color: #4CAF50;
+        }
+
+        .error {
+            color: #f44336;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Insertar Noticias en la Base de Datos</h1>
+        <button onclick="insertNews()">Iniciar Inserción</button>
+        <div id="log"></div>
+    </div>
+
+    <script>
+        const newsArticles = [
+            {
+                titulo: "Global Economic Summit Concludes with Historic Agreement",
+                extracto: "World leaders reach unprecedented consensus on environmental policies and economic reforms...",
+                contenido: `# Global Economic Summit Marks Historic Turning Point
+
+In a landmark gathering of global economic leaders, a historic agreement was reached that promises to reshape international cooperation on climate change and economic policy. The summit, which brought together representatives from over 190 countries, concluded with unanimous support for a comprehensive framework addressing both environmental sustainability and economic growth.
+
+## Key Provisions
+
+![Environmental initiatives](https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?q=80&w=1774&auto=format&fit=crop "Green Energy Solutions")
+
+The agreement includes several groundbreaking initiatives that will shape the future of global economic and environmental policy:
+
+- **$100 Billion Climate Fund**: Establishment of an annual fund for climate adaptation
+- **Carbon Pricing**: Implementation of a global carbon pricing mechanism
+- **Technology Sharing**: Creation of an international green technology sharing program
+- **Infrastructure**: Development of sustainable infrastructure initiatives
+
+> "This represents a turning point in how we approach global challenges," stated Sarah Johnson, lead economic analyst. "For the first time, we're seeing true alignment between environmental and economic objectives."
+
+## Impact and Future Outlook
+
+![Sustainable future](https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?q=80&w=1770&auto=format&fit=crop "Future of Sustainability")
+
+The impact of this agreement is expected to be far-reaching, affecting industries from energy to manufacturing. Key areas of impact include:
+
+### Economic Transformation
+- Renewable energy sector growth
+- Sustainable manufacturing practices
+- Green job creation
+- International trade reforms
+
+### Environmental Benefits
+- Reduced carbon emissions
+- Ecosystem protection
+- Biodiversity conservation
+- Climate resilience
+
+---
+
+*This historic agreement sets the stage for a new era of global cooperation in addressing our most pressing challenges.*`,
+                imagen: "https://images.unsplash.com/photo-1661956602116-aa6865609028?q=80&w=1664&auto=format&fit=crop",
+                categoria_id: 1,
+                video_id: "8wLCmDtCDAM",
+                video_titulo: "Global Economic Summit 2024: A New Era of International Cooperation",
+                video_descripcion: "An in-depth look at the groundbreaking agreements reached at this year's summit"
+            },
+            {
+                titulo: "Breakthrough in Quantum Computing Promises New Era",
+                extracto: "Scientists achieve major milestone in quantum supremacy, opening doors to new possibilities...",
+                contenido: `![Quantum Computer Laboratory](https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=1770&auto=format&fit=crop "Next Generation Quantum Computing")
+
+# Quantum Computing Breakthrough Reshapes Future of Technology
+
+A team of international researchers has announced a significant breakthrough in quantum computing technology, achieving what many experts are calling a "quantum supremacy milestone." The development represents a major leap forward in computing capabilities and could revolutionize fields ranging from cryptography to drug discovery.
+
+## Revolutionary Achievements
+
+![Quantum Technology](https://images.unsplash.com/photo-1511649475669-e288648b2339?q=80&w=1632&auto=format&fit=crop "Advanced Quantum Systems")
+
+The breakthrough involves several groundbreaking developments:
+
+- **Stable Quantum Processing**: Creation of a stable 1000-qubit quantum processor
+- **Error Correction**: Achievement of quantum error correction at scale
+- **Practical Applications**: Demonstration of quantum advantage in real-world scenarios
+- **Advanced Algorithms**: Development of new quantum algorithms for complex problems
+
+> "This advancement marks the beginning of a new era in computing," explains Dr. Michael Chen, lead researcher. "We're now able to solve problems that would take classical computers thousands of years to complete."
+
+## Future Applications
+
+![Data Processing](https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?q=80&w=1780&auto=format&fit=crop "Future of Computing")
+
+### Primary Impact Areas
+- Financial modeling and optimization
+- Climate change prediction
+- Drug discovery and development
+- Artificial intelligence advancement
+
+### Industry Benefits
+- Accelerated research and development
+- Enhanced security systems
+- Optimized logistics
+- Improved machine learning capabilities
+
+---
+
+*The implications of this breakthrough extend far beyond the laboratory, promising to transform multiple industries and scientific fields.*`,
+                imagen: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=1770&auto=format&fit=crop",
+                categoria_id: 2,
+                video_id: "QdqFfZcDwAw",
+                video_titulo: "Understanding Quantum Computing: The Next Technological Revolution",
+                video_descripcion: "Explore the fascinating world of quantum computing and its potential impact"
+            },
+            {
+                titulo: "Artificial Intelligence Transforms Healthcare",
+                extracto: "New AI system shows unprecedented accuracy in early disease detection...",
+                contenido: `![AI in Healthcare](https://images.unsplash.com/photo-1631549916768-4119b2e5f926?q=80&w=1769&auto=format&fit=crop "AI Medical Analysis")
+
+# AI Revolution in Healthcare: A New Era of Medical Diagnosis
+
+A revolutionary artificial intelligence system has demonstrated remarkable capabilities in early disease detection, marking a significant milestone in healthcare technology. This breakthrough could fundamentally change how we approach medical diagnosis and treatment planning.
+
+## Key Achievements
+
+![Medical Technology](https://images.unsplash.com/photo-1532094349884-543bc11b234d?q=80&w=1770&auto=format&fit=crop "Advanced Medical Diagnostics")
+
+The AI system has demonstrated exceptional capabilities:
+
+- **Ultra-Precise Detection**: 99.9% accuracy in early cancer detection
+- **Real-Time Analysis**: Instant processing of medical imaging
+- **Predictive Medicine**: Advanced diagnosis of chronic conditions
+- **Seamless Integration**: Compatible with existing healthcare systems
+
+> "This AI system doesn't just match human diagnostic capabilities – it significantly exceeds them in many areas. We're seeing patterns and correlations that human doctors might take years to identify." - Dr. Emily Roberts
+
+## Medical Applications
+
+![Healthcare Innovation](https://images.unsplash.com/photo-1498623116890-37e912163d5d?q=80&w=1770&auto=format&fit=crop "Future of Healthcare")
+
+### Specialized Fields
+- **Oncology**: Early cancer detection and treatment planning
+- **Cardiology**: Heart disease risk assessment
+- **Neurology**: Brain disorder diagnosis
+- **Pediatrics**: Child development monitoring
+
+### Healthcare Impact
+- Improved diagnostic accuracy
+- Reduced waiting times
+- Lower healthcare costs
+- Better patient outcomes
+
+---
+
+*This development promises to make high-quality medical diagnosis more accessible and accurate, particularly in underserved areas where specialist doctors are scarce.*`,
+                imagen: "https://images.unsplash.com/photo-1631549916768-4119b2e5f926?q=80&w=1769&auto=format&fit=crop",
+                categoria_id: 3,
+                video_id: "CB_w4qS6HF4",
+                video_titulo: "AI in Healthcare: Revolutionizing Medical Diagnosis",
+                video_descripcion: "See how artificial intelligence is changing the future of healthcare"
+            },
+            {
+                titulo: "Space Tourism Takes a Giant Leap Forward",
+                extracto: "Private companies make space travel accessible to civilians for the first time...",
+                contenido: `![Space Tourism Launch](https://images.unsplash.com/photo-1446776877081-d282a0f896e2?q=80&w=1772&auto=format&fit=crop "Future of Space Travel")
+
+# Space Tourism: The Dawn of Civilian Space Travel
+
+In a historic development for space exploration, multiple private space companies have announced successful civilian space flight programs, marking the beginning of a new era in space tourism. These breakthrough achievements are making space travel accessible to civilians for the first time in history.
+
+## Major Developments
+
+![Space Station](https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1772&auto=format&fit=crop "Orbital Space Station")
+
+The space tourism revolution includes:
+
+- **Orbital Tourism**: Regular orbital flights for civilian passengers
+- **Space Accommodation**: Luxury space hotels in low Earth orbit
+- **Safety Protocols**: Advanced safety systems for space tourists
+- **Cost Reduction**: Reduced launch costs through reusable technology
+
+> "We're witnessing the democratization of space travel," says James Wilson, space tourism analyst. "What was once the domain of government agencies is now becoming accessible to private citizens."
+
+## Industry Impact
+
+![Space Technology](https://images.unsplash.com/photo-1516849841032-87cbac4d88f7?q=80&w=1770&auto=format&fit=crop "Advanced Space Technology")
+
+### Immediate Benefits
+- Creation of thousands of new jobs
+- Development of new space technologies
+- Increased private investment
+- International cooperation
+
+### Future Prospects
+- Expanding orbital tourism market
+- Lunar tourism development
+- Mars mission preparation
+- Space hotel industry growth
+
+---
+
+*This marks just the beginning of what experts predict will be a trillion-dollar industry by 2030.*`,
+                imagen: "https://images.unsplash.com/photo-1446776877081-d282a0f896e2?q=80&w=1772&auto=format&fit=crop",
+                categoria_id: 4,
+                video_id: "PK_HHW_1ichQ",
+                video_titulo: "The Future of Space Tourism: Private Space Travel",
+                video_descripcion: "Discover how private companies are making space travel accessible"
+            },
+            {
+                titulo: "Revolutionary Clean Energy Solution Unveiled",
+                extracto: "Startup reveals groundbreaking technology for sustainable power generation...",
+                contenido: `![Clean Energy Innovation](https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?q=80&w=1770&auto=format&fit=crop "Sustainable Energy Future")
+
+# Revolutionary Clean Energy Breakthrough Changes Energy Landscape
+
+A pioneering clean energy startup has unveiled a groundbreaking technology that promises to revolutionize sustainable power generation. The innovation combines advanced materials science with novel energy capture methods to achieve unprecedented efficiency in renewable energy production.
+
+## Technology Features
+
+![Solar Technology](https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=1772&auto=format&fit=crop "Advanced Solar Systems")
+
+The revolutionary system offers:
+
+- **High Efficiency**: 90% energy conversion efficiency
+- **Environmental Impact**: Zero environmental footprint
+- **Scalability**: Adaptable from home to industrial use
+- **Economic Viability**: Cost-effective implementation
+
+> "This technology represents a paradigm shift in how we think about energy generation. It's not just an improvement on existing methods – it's a completely new approach." - Lisa Anderson, Chief Engineer
+
+## Implementation Success
+
+![Energy Grid](https://images.unsplash.com/photo-1466611653911-95081537e5b7?q=80&w=1770&auto=format&fit=crop "Smart Energy Grid")
+
+### Testing Environments
+- **Urban Integration**: City-wide deployment
+- **Remote Applications**: Off-grid solutions
+- **Industrial Use**: Factory implementation
+- **Agricultural Solutions**: Farm energy systems
+
+### Performance Metrics
+- Consistent power output
+- Minimal maintenance required
+- Rapid installation process
+- Long-term durability
+
+---
+
+*Early adoption programs are already showing promising results, with several cities planning large-scale implementations.*`,
+                imagen: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?q=80&w=1770&auto=format&fit=crop",
+                categoria_id: 5,
+                video_id: "YRQiEOEPWJs",
+                video_titulo: "Clean Energy Revolution: Sustainable Power for the Future",
+                video_descripcion: "Learn about the latest breakthroughs in clean energy technology"
+            },
+            {
+                titulo: "Global Education Initiative Launches",
+                extracto: "International collaboration aims to transform digital learning accessibility worldwide...",
+                contenido: `![Digital Education](https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?q=80&w=1770&auto=format&fit=crop "Future of Education")
+
+# Global Education Revolution: Breaking Down Digital Barriers
+
+A groundbreaking global education initiative has been launched, bringing together leading educational institutions, tech companies, and governments to transform digital learning accessibility worldwide. This collaborative effort aims to bridge the educational divide and make quality education available to everyone.
+
+## Core Components
+
+![Virtual Learning](https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=1774&auto=format&fit=crop "Digital Learning Platform")
+
+Key elements of the initiative include:
+
+- **Universal Access**: Free access to world-class educational resources
+- **AI Learning**: AI-powered personalized learning paths
+- **Global Reach**: Multi-language support for global accessibility
+- **Offline Capability**: Learning capabilities for remote areas
+
+> "Education is a fundamental right, and technology should help make it universally accessible," says David Brown, project director. "This initiative represents a major step toward that goal."
+
+## Program Features
+
+![Educational Technology](https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1764&auto=format&fit=crop "EdTech Innovation")
+
+### Digital Infrastructure
+- **Interactive Platforms**: Engaging learning environments
+- **Virtual Reality**: Immersive educational experiences
+- **Peer Networks**: Collaborative learning systems
+- **Translation Services**: Real-time language support
+
+### Impact Metrics
+- Improved student engagement
+- Higher completion rates
+- Better learning outcomes
+- Increased accessibility
+
+---
+
+*Initial pilot programs have shown remarkable success, with participating students showing significant improvements in learning outcomes.*`,
+                imagen: "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?q=80&w=1770&auto=format&fit=crop",
+                categoria_id: 6,
+                video_id: "rG_bNhw_2UY",
+                video_titulo: "Digital Education: Breaking Down Global Barriers",
+                video_descripcion: "How technology is transforming education worldwide"
+            },
+            {
+                titulo: "Breakthrough in Renewable Energy Storage",
+                extracto: "New battery technology promises to revolutionize clean energy adoption globally...",
+                contenido: `![Energy Storage Innovation](https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?q=80&w=1774&auto=format&fit=crop "Next Generation Energy Storage")
+
+# Revolutionary Energy Storage: Powering the Future
+
+Scientists have announced a major breakthrough in energy storage technology, developing a new type of battery that could solve one of the biggest challenges in renewable energy adoption. This innovation could make clean energy sources like solar and wind power more reliable and accessible than ever before.
+
+## Key Innovations
+
+![Battery Technology](https://images.unsplash.com/photo-1513828583688-c52646db42da?q=80&w=1770&auto=format&fit=crop "Advanced Battery Systems")
+
+The groundbreaking technology offers:
+
+- **Enhanced Capacity**: 10x higher storage capacity than current batteries
+- **Rapid Charging**: 50% faster charging times
+- **Durability**: Longer lifespan and improved safety features
+- **Cost Efficiency**: Streamlined manufacturing process
+
+> "This breakthrough could be the missing piece in the renewable energy puzzle. We can now store massive amounts of energy efficiently and safely." - Rachel Green, Lead Researcher
+
+## Applications & Impact
+
+![Energy Applications](https://images.unsplash.com/photo-1466611653911-95081537e5b7?q=80&w=1770&auto=format&fit=crop "Energy Grid Integration")
+
+### Primary Use Cases
+- **Grid Storage**: Large-scale energy management
+- **Electric Vehicles**: Extended range and faster charging
+- **Consumer Electronics**: Longer-lasting devices
+- **Emergency Systems**: Reliable backup power
+
+### Industry Benefits
+- Accelerated renewable energy adoption
+- Reduced carbon emissions
+- Lower energy costs
+- Improved grid stability
+
+---
+
+*The technology is already attracting significant interest from major energy companies and manufacturers worldwide.*`,
+                imagen: "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?q=80&w=1774&auto=format&fit=crop",
+                categoria_id: 7,
+                video_id: "pLcqJ2DclEg",
+                video_titulo: "Next-Generation Battery Technology: Revolutionizing Energy Storage",
+                video_descripcion: "A deep dive into the latest advances in energy storage solutions"
+            },
+            {
+                titulo: "Cultural Renaissance in Digital Age",
+                extracto: "How technology is reshaping art, music, and creative expression...",
+                contenido: `![Digital Art](https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?q=80&w=1780&auto=format&fit=crop "Digital Art Creation")
+
+# Digital Age Renaissance: The Future of Creative Expression
+
+A new cultural renaissance is emerging at the intersection of technology and traditional arts, revolutionizing how we create, experience, and share creative works. This digital transformation is breaking down barriers between different art forms and creating entirely new means of expression.
+
+## Revolutionary Developments
+
+![Virtual Reality Art](https://images.unsplash.com/photo-1617802690992-15d93263d3a9?q=80&w=1770&auto=format&fit=crop "VR Art Experience")
+
+Key innovations in digital arts:
+
+- **AI Creation**: Advanced AI-generated art and music
+- **Virtual Galleries**: Immersive VR art exhibitions
+- **Digital Ownership**: Blockchain-based art authentication
+- **Live Integration**: Interactive digital performances
+
+> "We're seeing a complete reimagining of what art can be. Technology isn't just a tool anymore – it's becoming a creative partner." - Alex Turner, Digital Art Curator
+
+## Creative Impact
+
+![Digital Performance](https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1770&auto=format&fit=crop "Interactive Performance")
+
+### Transformed Fields
+- **Visual Arts**: Digital painting and sculpture
+- **Music**: AI-assisted composition
+- **Performance**: Mixed reality shows
+- **Literature**: Interactive storytelling
+
+### Cultural Benefits
+- Democratized art creation
+- Global audience reach
+- New revenue streams
+- Cross-cultural collaboration
+
+---
+
+*This digital renaissance is democratizing art creation and appreciation, making it more accessible to both creators and audiences worldwide.*`,
+                imagen: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?q=80&w=1780&auto=format&fit=crop",
+                categoria_id: 8,
+                video_id: "ZjehhvnZAmo",
+                video_titulo: "Digital Art Revolution: Where Technology Meets Creativity",
+                video_descripcion: "Exploring the intersection of art and technology in the digital age"
+            },
+            {
+                titulo: "Urban Innovation Transforms Cities",
+                extracto: "Smart city initiatives revolutionize urban living and sustainability...",
+                contenido: `![Smart City Overview](https://images.unsplash.com/photo-1449824913935-59a10b8d2000?q=80&w=1770&auto=format&fit=crop "Future Urban Development")
+
+# Smart Cities: The Future of Urban Living
+
+Cities worldwide are undergoing a dramatic transformation through the implementation of smart technologies and innovative urban planning approaches. These changes are making urban areas more sustainable, efficient, and livable for residents.
+
+## Smart Solutions
+
+![Urban Technology](https://images.unsplash.com/photo-1494522855154-9297ac14b55f?q=80&w=1770&auto=format&fit=crop "Smart City Technology")
+
+Key technological implementations:
+
+- **Traffic Management**: AI-powered traffic control systems
+- **Energy Grid**: Smart power distribution networks
+- **Waste Systems**: Automated collection and processing
+- **Environmental Monitoring**: Real-time air quality tracking
+
+> "We're not just making cities smarter – we're making them more responsive to human needs and environmental concerns." - Maria Rodriguez, Urban Planning Expert
+
+## Measurable Impact
+
+![Sustainable City](https://images.unsplash.com/photo-1518005020951-eccb494ad742?q=80&w=1772&auto=format&fit=crop "Urban Sustainability")
+
+### City Improvements
+- **Traffic**: 30% reduction in congestion
+- **Energy**: 40% decrease in consumption
+- **Air Quality**: Significant pollution reduction
+- **Services**: Enhanced public amenities
+
+### Future Developments
+- Integrated transportation systems
+- Predictive maintenance
+- Citizen engagement platforms
+- Sustainable infrastructure
+
+---
+
+*These smart city solutions are being adopted by municipalities globally, setting new standards for urban development.*`,
+                imagen: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?q=80&w=1770&auto=format&fit=crop",
+                categoria_id: 9,
+                video_id: "hRbg7_SJxLo",
+                video_titulo: "Smart Cities: Building the Urban Future",
+                video_descripcion: "See how smart technology is reshaping urban living"
+            },
+            {
+                titulo: "Breakthrough in Medical Research",
+                extracto: "Scientists discover revolutionary treatment for chronic diseases...",
+                contenido: `![Medical Research](https://images.unsplash.com/photo-1532094349884-543bc11b234d?q=80&w=1770&auto=format&fit=crop "Advanced Medical Research")
+
+# Revolutionary Medical Treatment: A New Era in Healthcare
+
+Medical researchers have announced a groundbreaking discovery that could revolutionize the treatment of multiple chronic diseases. This new therapeutic approach combines genetic engineering with targeted drug delivery to address the root causes of various chronic conditions.
+
+## Treatment Innovation
+
+![Genetic Research](https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=1770&auto=format&fit=crop "Genetic Engineering")
+
+Breakthrough features:
+
+- **Gene Therapy**: Advanced genetic modification techniques
+- **Personalization**: Custom treatment protocols
+- **Safety**: Minimal adverse effects
+- **Efficiency**: Rapid therapeutic response
+
+> "This discovery could change how we approach chronic disease treatment. We're not just managing symptoms – we're addressing the underlying causes." - Dr. John Smith, Lead Researcher
+
+## Clinical Applications
+
+![Medical Technology](https://images.unsplash.com/photo-1576086213369-97a306d36557?q=80&w=1770&auto=format&fit=crop "Advanced Treatment")
+
+### Treatment Areas
+- **Autoimmune**: Targeted immune response
+- **Cardiovascular**: Heart disease prevention
+- **Neurological**: Brain disorder therapy
+- **Metabolic**: System regulation
+
+### Patient Benefits
+- Faster recovery times
+- Reduced treatment costs
+- Improved quality of life
+- Long-term effectiveness
+
+---
+
+*Clinical trials are showing unprecedented success rates, with many patients experiencing complete remission.*`,
+                imagen: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?q=80&w=1770&auto=format&fit=crop",
+                categoria_id: 10,
+                video_id: "wD-d_oqGHYM",
+                video_titulo: "Medical Breakthroughs: The Future of Healthcare",
+                video_descripcion: "Understanding the latest advances in medical research"
+            }
+        ];
+        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibm9tYnJlIjoiQWRtaW5pc3RyYWRvciIsImNvcnJlbyI6ImFkbWluQGdtYWlsLmNvbSIsInJvbF9pZCI6MSwiaWF0IjoxNzM2OTAxNjE2LCJleHAiOjE3MzY5ODgwMTZ9.zHMthwwQHhJbSbgKaciougp2Db8ehH_eT3KKfaP4-KY";
+
+        function log(message, isError = false) {
+            const logDiv = document.getElementById('log');
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
+            messageDiv.className = isError ? 'error' : 'success';
+            logDiv.appendChild(messageDiv);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        async function testServer() {
+            try {
+                const response = await fetch('http://localhost:3000/api/noticias', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Origin': 'http://localhost:5173'
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Error HTTP: ${response.status} - ${errorText}`);
+                }
+
+                return true;
+            } catch (error) {
+                console.error('Error al contactar el servidor:', error);
+                return false;
+            }
+        }
+
+        async function insertNews() {
+            const serverOk = await testServer();
+            if (!serverOk) {
+                log('Error: No se puede conectar con el servidor. Verifica que esté corriendo en http://localhost:3000', true);
+                return;
+            }
+            const button = document.querySelector('button');
+            button.disabled = true;
+            button.textContent = 'Insertando...';
+
+            try {
+                for (const article of newsArticles) {
+                    try {
+                        const response = await fetch('http://localhost:3000/api/noticias', {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json',
+                                'Origin': 'http://localhost:5173'
+                            },
+                            body: JSON.stringify({
+                                titulo: article.titulo,
+                                extracto: article.extracto,
+                                contenido: article.contenido,
+                                imagen: article.imagen,
+                                categoria_id: article.categoria_id,
+                                video_id: article.video_id,
+                                video_titulo: article.video_titulo,
+                                video_descripcion: article.video_descripcion
+                            })
+                        });
+
+                        if (!response.ok) {
+                            const errorText = await response.text();
+                            throw new Error(`Error HTTP: ${response.status} - ${errorText}`);
+                        }
+
+                        const data = await response.json();
+                        log(`Artículo insertado con éxito: ${article.titulo}`);
+                        await new Promise(resolve => setTimeout(resolve, 2000));
+
+                    } catch (error) {
+                        log(`Error al insertar artículo: ${article.titulo} - ${error.message}`, true);
+                        console.error('Error detallado:', error);
+                        await new Promise(resolve => setTimeout(resolve, 2000));
+                    }
+                }
+                log('Proceso completado');
+            } catch (error) {
+                log(`Error en el proceso: ${error.message}`, true);
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Iniciar Inserción';
+            }
+        }
+    </script>
+</body>
+
+</html>

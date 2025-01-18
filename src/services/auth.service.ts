@@ -1,4 +1,4 @@
-import { API_URL, AUTH_STORAGE_KEY, TOKEN_STORAGE_KEY } from '@/config/constants';
+import { AUTH_STORAGE_KEY, TOKEN_STORAGE_KEY } from '@/config/constants';
 import { BaseService } from './base.service';
 
 export interface AuthUser {

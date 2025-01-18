@@ -1,7 +1,7 @@
-import { useState, useCallback, Suspense, memo, useEffect } from "react";
+import { useState, Suspense, memo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { PlusCircle, Pencil, Trash2, MoreHorizontal } from "lucide-react";
+import { PlusCircle, Pencil, Trash2 } from "lucide-react";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import {
     AlertDialog,
@@ -19,12 +19,6 @@ import { Avatar } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
 import VideoService, { type Video } from "@/services/video.service";
 import { useToast } from "@/components/ui/use-toast";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 // Componente de carga con skeleton
 const VideoCardSkeleton = () => (

@@ -82,10 +82,6 @@ export default function UsersPage() {
         loadUsers();
     }, []);
 
-    const handleDelete = (id: number) => {
-        setUserToDelete(id);
-        setIsDeleteOpen(true);
-    };
 
     const confirmDelete = async () => {
         if (userToDelete) {

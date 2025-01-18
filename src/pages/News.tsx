@@ -218,7 +218,7 @@ export default function NewsPage() {
     const navigate = useNavigate();
     const { toast } = useToast();
     const noticiaService = NoticiaService;
-    const { user: currentUser } = useAuth();
+    useAuth();
 
     useEffect(() => {
         loadNews();

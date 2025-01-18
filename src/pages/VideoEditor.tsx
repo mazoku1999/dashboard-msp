@@ -6,9 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import { ArrowLeft, PlusCircle, Youtube } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
 import { CategoriaService, type Categoria } from "@/services/categoria.service";
-import VideoService, { type Video } from "@/services/video.service";
+import VideoService from "@/services/video.service";
 import {
     Select,
     SelectContent,
@@ -168,12 +167,6 @@ export default function VideoEditor() {
         }));
     };
 
-    const handleStatusChange = (value: string) => {
-        setFormData(prev => ({
-            ...prev,
-            estado: value as 'borrador' | 'publicado' | 'archivado'
-        }));
-    };
 
     const handleSubmit = async () => {
         try {
@@ -249,6 +242,7 @@ export default function VideoEditor() {
                             value={youtubeUrl}
                             onChange={(e) => handleYoutubeUrlChange(e.target.value)}
                             className={error ? "border-destructive" : ""}
+                            disabled={isLoading}
                         />
                         {error && (
                             <p className="text-sm text-destructive">{error}</p>
@@ -262,6 +256,7 @@ export default function VideoEditor() {
                             value={formData.titulo}
                             onChange={handleInputChange}
                             placeholder="Título del video"
+                            disabled={isLoading}
                         />
                     </div>
 
@@ -270,6 +265,7 @@ export default function VideoEditor() {
                         <Select
                             value={formData.categoria_id.toString()}
                             onValueChange={handleCategoryChange}
+                            disabled={isLoading}
                         >
                             <SelectTrigger>
                                 <SelectValue placeholder="Selecciona una categoría" />
@@ -295,6 +291,7 @@ export default function VideoEditor() {
                                 ...prev,
                                 estado: value as 'borrador' | 'publicado'
                             }))}
+                            disabled={isLoading}
                         >
                             <SelectTrigger>
                                 <SelectValue placeholder="Selecciona el estado" />
@@ -314,6 +311,7 @@ export default function VideoEditor() {
                             onChange={handleInputChange}
                             placeholder="Ingresa una descripción para el video..."
                             className="min-h-[100px]"
+                            disabled={isLoading}
                         />
                     </div>
                 </div>
@@ -352,16 +350,26 @@ export default function VideoEditor() {
                     variant="outline"
                     size="lg"
                     className="w-full sm:w-auto"
+                    disabled={isLoading}
                 >
                     Cancelar
                 </Button>
                 <RainbowButton
                     onClick={handleSubmit}
                     className="w-full sm:w-auto gap-2"
-                    disabled={!formData.titulo || !formData.youtube_id || !formData.categoria_id}
+                    disabled={!formData.titulo || !formData.youtube_id || !formData.categoria_id || isLoading}
                 >
-                    <PlusCircle className="h-4 w-4" />
-                    {id ? "Actualizar Video" : "Crear Video"}
+                    {isLoading ? (
+                        <>
+                            <span className="animate-spin">⏳</span>
+                            {id ? "Actualizando..." : "Creando..."}
+                        </>
+                    ) : (
+                        <>
+                            <PlusCircle className="h-4 w-4" />
+                            {id ? "Actualizar Video" : "Crear Video"}
+                        </>
+                    )}
                 </RainbowButton>
             </div>
         </div>

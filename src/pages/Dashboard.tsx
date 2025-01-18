@@ -5,9 +5,7 @@ import {
     UsersIcon,
     PlayCircleIcon,
     ActivityIcon,
-    TrendingUpIcon,
-    Monitor,
-    Smartphone
+    TrendingUpIcon
 } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/components/ui/chart';

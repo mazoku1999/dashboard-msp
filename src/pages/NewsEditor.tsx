@@ -9,7 +9,7 @@ import MarkdownEditor from "@/components/ui/markdown-editor";
 import { ArrowLeft, PlusCircle } from "lucide-react";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import { useToast } from "@/components/ui/use-toast";
-import NoticiaService, { type Noticia, type CreateNoticiaDTO, type UpdateNoticiaDTO } from '@/services/noticia.service';
+import NoticiaService from '@/services/noticia.service';
 import { CategoriaService, type Categoria } from '@/services/categoria.service';
 import { useAuth } from "@/contexts/AuthContext";
 

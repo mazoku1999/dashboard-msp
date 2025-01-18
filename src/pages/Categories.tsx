@@ -141,14 +141,6 @@ const Categories = () => {
         }
     };
 
-    const handleNew = () => {
-        setEditingCategory(null);
-        setFormData({
-            nombre: '',
-            descripcion: ''
-        });
-        setShowDialog(true);
-    };
 
     const filteredCategories = categories.filter(category =>
         category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||

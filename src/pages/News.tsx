@@ -134,6 +134,11 @@ const NewsCard = memo(({ item, onEdit, onDelete }: {
                             {item.category}
                         </Badge>
                     </div>
+                    <div className="absolute top-4 right-4">
+                        <Badge variant={item.status === 'publicado' ? 'default' : 'secondary'}>
+                            {item.status === 'publicado' ? 'Publicado' : 'Borrador'}
+                        </Badge>
+                    </div>
                     {item.video && (
                         <div className="absolute bottom-4 right-4">
                             <Badge variant="secondary" className="bg-red-500/80 hover:bg-red-500/90 text-white gap-1.5">

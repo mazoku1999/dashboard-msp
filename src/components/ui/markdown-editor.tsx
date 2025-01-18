@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useEditor, EditorContent, BubbleMenu, FloatingMenu } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
@@ -21,20 +21,15 @@ import Subscript from '@tiptap/extension-subscript';
 import Superscript from '@tiptap/extension-superscript';
 import Underline from '@tiptap/extension-underline';
 import CharacterCount from '@tiptap/extension-character-count';
-import { getHighlighter } from 'shiki';
 import {
     Bold,
     Italic,
     Underline as UnderlineIcon,
-    Strikethrough,
-    Superscript as SuperscriptIcon,
-    Subscript as SubscriptIcon,
     List,
     ListOrdered,
     Quote,
     Undo,
     Redo,
-    Code,
     Heading1,
     Heading2,
     Heading3,
@@ -43,46 +38,13 @@ import {
     SplitSquareHorizontal,
     Eye,
     Edit3,
-    Table as TableIcon,
     CheckSquare,
     Highlighter,
-    AlignLeft,
-    AlignCenter,
-    AlignRight,
-    AlignJustify,
-    Palette,
-    Type,
-    Minus,
-    RotateCcw,
-    FileCode,
-    ImagePlus,
-    Youtube,
-    Hash,
-    ListChecks,
-    Baseline,
-    PaintBucket,
-    GripVertical,
-    Copy,
-    Check,
     User,
-    Badge,
 } from 'lucide-react';
 import { Button } from './button';
 import { cn } from '@/lib/utils';
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -92,20 +54,13 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog";
 import TurndownService from 'turndown';
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
-import { unified } from 'unified';
-import remarkParse from 'remark-parse';
-import remarkRehype from 'remark-rehype';
-import rehypeStringify from 'rehype-stringify';
 import { marked } from 'marked';
-import DOMPurify from 'dompurify';
-import { Node } from '@tiptap/core';
 
 interface MarkdownEditorProps {
     content: string;
@@ -127,17 +82,7 @@ interface MarkdownEditorProps {
 
 const lowlight = createLowlight(common);
 
-// Configuración de temas de código
-const themes = {
-    light: 'github-light',
-    dark: 'github-dark'
-};
 
-const CustomImage = Image.extend({
-    renderHTML({ HTMLAttributes }) {
-        return ['img', { ...HTMLAttributes, class: 'rounded-md border max-w-full h-auto' }];
-    },
-});
 
 marked.use({
     extensions: [{
@@ -162,18 +107,7 @@ const MarkdownEditor = ({
     const [imageUrl, setImageUrl] = useState('');
     const [imageAlt, setImageAlt] = useState('');
     const [imageTitle, setImageTitle] = useState('');
-    const [copied, setCopied] = useState(false);
 
-    const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
-        const element = e.currentTarget;
-        const isAtTop = element.scrollTop === 0;
-        const isAtBottom = element.scrollHeight - element.scrollTop === element.clientHeight;
-
-        if ((isAtTop && e.deltaY < 0) || (isAtBottom && e.deltaY > 0)) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-    };
 
     const parseContent = (markdown: string) => {
         // First convert images to HTML with our custom classes
@@ -272,7 +206,7 @@ const MarkdownEditor = ({
                 }
                 return false;
             },
-            handlePaste: (view, event, slice) => {
+            handlePaste: () => {
                 // Manejar el pegado de texto manteniendo la posición del cursor
                 return false;
             }
@@ -295,15 +229,7 @@ const MarkdownEditor = ({
         }
     }, [editor, mode]);
 
-    useEffect(() => {
-        // Cargar el resaltador de sintaxis
-        getHighlighter({
-            themes: [themes.light, themes.dark],
-            langs: ['javascript', 'typescript', 'html', 'css', 'json', 'markdown']
-        }).then(highlighter => {
-            // Configurar el resaltador
-        });
-    }, []);
+
 
     if (!editor) {
         return null;
@@ -338,41 +264,8 @@ const MarkdownEditor = ({
         editor.chain().focus().setLink({ href: url }).run();
     };
 
-    const addTable = () => {
-        editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run();
-    };
 
-    const addYoutubeEmbed = () => {
-        const url = window.prompt('URL del video de YouTube:');
-        if (url) {
-            const videoId = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/)?.[1];
-            if (videoId) {
-                const div = document.createElement('div');
-                div.setAttribute('class', 'aspect-video');
-                const iframe = document.createElement('iframe');
-                iframe.setAttribute('src', `https://www.youtube.com/embed/${videoId}`);
-                iframe.setAttribute('frameborder', '0');
-                iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
-                iframe.setAttribute('allowfullscreen', 'true');
-                div.appendChild(iframe);
-                editor.chain().focus().setContent(div.outerHTML).run();
-            }
-        }
-    };
 
-    const copyAsMarkdown = () => {
-        if (editor) {
-            const turndown = new TurndownService({
-                headingStyle: 'atx',
-                codeBlockStyle: 'fenced'
-            });
-            const markdown = turndown.turndown(editor.getHTML());
-            navigator.clipboard.writeText(markdown).then(() => {
-                setCopied(true);
-                setTimeout(() => setCopied(false), 2000);
-            });
-        }
-    };
 
     return (
         <div className="rounded-md border bg-background flex flex-col h-full" onWheel={(e) => e.stopPropagation()}>
@@ -658,7 +551,7 @@ const MarkdownEditor = ({
                             zIndex: 5
                         }}
                         editor={editor}
-                        shouldShow={({ state, editor }) => {
+                        shouldShow={({ state }) => {
                             const { selection } = state;
                             const { empty, $anchor } = selection;
                             const isRootDepth = $anchor.depth === 1;

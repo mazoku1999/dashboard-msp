@@ -9,14 +9,14 @@ export interface Noticia {
     image: string;
     author: string;
     created_at: string;
-    status: 'borrador' | 'publicado' | 'archivado';
     category: string;
     categoria_id: number;
     video?: {
         id: string;
         title: string;
-        description: string;
+        description?: string;
     };
+    status: 'borrador' | 'publicado' | 'archivado';
 }
 
 export interface CreateNoticiaDTO {
@@ -28,6 +28,7 @@ export interface CreateNoticiaDTO {
     video_id?: string;
     video_titulo?: string;
     video_descripcion?: string;
+    estado?: 'borrador' | 'publicado';
 }
 
 export interface UpdateNoticiaDTO {

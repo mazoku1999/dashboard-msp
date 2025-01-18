@@ -34,6 +34,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { RainbowButton } from "@/components/ui/rainbow-button";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Categories = () => {
     const [categories, setCategories] = useState<Categoria[]>([]);
@@ -48,6 +50,15 @@ const Categories = () => {
 
     const { toast } = useToast();
     const categoriaService = CategoriaService.getInstance();
+    const navigate = useNavigate();
+    const { user: currentUser } = useAuth();
+    const isAdmin = currentUser?.rol_id === 1;
+
+    useEffect(() => {
+        if (!isAdmin) {
+            navigate('/dashboard');
+        }
+    }, [isAdmin, navigate]);
 
     const loadCategories = async () => {
         try {

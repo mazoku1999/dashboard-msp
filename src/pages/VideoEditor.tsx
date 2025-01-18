@@ -101,11 +101,11 @@ export default function VideoEditor() {
                     const video = await videoService.getVideo(parseInt(id));
                     setFormData({
                         titulo: video.title,
-                        youtube_id: video.youtubeId,
                         descripcion: video.description,
+                        youtube_id: video.youtubeId,
                         miniatura: video.thumbnail,
                         categoria_id: categorias.find(c => c.name === video.category)?.id || 0,
-                        estado: video.status
+                        estado: video.status || 'borrador'
                     });
                     setYoutubeUrl(`https://youtube.com/watch?v=${video.youtubeId}`);
                 } catch (error) {
@@ -141,7 +141,7 @@ export default function VideoEditor() {
                 titulo: videoInfo.title || prev.titulo,
                 youtube_id: videoInfo.youtubeId,
                 miniatura: videoInfo.thumbnail,
-                descripcion: prev.descripcion || `Video de ${videoInfo.author}`
+                descripcion: prev.descripcion
             }));
         } catch (err) {
             setError("Error al obtener la información del video");
@@ -176,48 +176,46 @@ export default function VideoEditor() {
     };
 
     const handleSubmit = async () => {
-        if (!formData.titulo || !formData.youtube_id || !formData.categoria_id) {
-            toast({
-                variant: "destructive",
-                title: "Error",
-                description: "Por favor completa todos los campos requeridos.",
-            });
-            return;
-        }
-
         try {
-            if (id) {
-                const updateData: UpdateVideoDTO = {
-                    titulo: formData.titulo,
-                    youtube_id: formData.youtube_id,
-                    descripcion: formData.descripcion,
-                    miniatura: formData.miniatura,
-                    categoria_id: formData.categoria_id,
-                    estado: formData.estado
-                };
-                await videoService.updateVideo(parseInt(id), updateData);
-            } else {
-                const createData: CreateVideoDTO = {
-                    titulo: formData.titulo,
-                    youtube_id: formData.youtube_id,
-                    descripcion: formData.descripcion,
-                    miniatura: formData.miniatura,
-                    categoria_id: formData.categoria_id
-                };
-                await videoService.createVideo(createData);
-            }
+            setIsLoading(true);
+            const baseDto = {
+                titulo: formData.titulo,
+                descripcion: formData.descripcion,
+                youtube_id: formData.youtube_id,
+                miniatura: formData.miniatura,
+                categoria_id: formData.categoria_id
+            };
 
-            toast({
-                title: id ? "Video actualizado" : "Video creado",
-                description: `El video ha sido ${id ? "actualizado" : "creado"} exitosamente.`,
-            });
+            if (id) {
+                // Para actualizar, incluimos el estado completo
+                await videoService.updateVideo(parseInt(id), {
+                    ...baseDto,
+                    estado: formData.estado
+                });
+                toast({
+                    title: "¡Éxito!",
+                    description: "Video actualizado correctamente"
+                });
+            } else {
+                // Para crear, solo permitimos borrador o publicado
+                await videoService.createVideo({
+                    ...baseDto,
+                    estado: formData.estado === 'publicado' ? 'publicado' : 'borrador'
+                });
+                toast({
+                    title: "¡Éxito!",
+                    description: "Video creado correctamente"
+                });
+            }
             navigate('/videos');
-        } catch (error: any) {
+        } catch (error) {
             toast({
                 variant: "destructive",
                 title: "Error",
-                description: error.message || `No se pudo ${id ? "actualizar" : "crear"} el video.`
+                description: "Hubo un error al guardar el video"
             });
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -289,24 +287,35 @@ export default function VideoEditor() {
                         </Select>
                     </div>
 
-                    {id && (
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium">Estado</label>
-                            <Select
-                                value={formData.estado}
-                                onValueChange={handleStatusChange}
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Selecciona un estado" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="borrador">Borrador</SelectItem>
-                                    <SelectItem value="publicado">Publicado</SelectItem>
-                                    <SelectItem value="archivado">Archivado</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    )}
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">Estado</label>
+                        <Select
+                            value={formData.estado || "borrador"}
+                            onValueChange={(value) => setFormData(prev => ({
+                                ...prev,
+                                estado: value as 'borrador' | 'publicado'
+                            }))}
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Selecciona el estado" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="borrador">Borrador</SelectItem>
+                                <SelectItem value="publicado">Publicado</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">Descripción</label>
+                        <Textarea
+                            name="descripcion"
+                            value={formData.descripcion}
+                            onChange={handleInputChange}
+                            placeholder="Ingresa una descripción para el video..."
+                            className="min-h-[100px]"
+                        />
+                    </div>
                 </div>
 
                 <div className="space-y-4">

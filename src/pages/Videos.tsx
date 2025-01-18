@@ -65,6 +65,12 @@ const VideoCard = memo(({ item, onEdit, onArchive }: {
                     <Badge className="absolute top-4 left-4 z-10">
                         {item.category}
                     </Badge>
+                    <Badge
+                        className="absolute top-4 right-4 z-10"
+                        variant={item.status === 'publicado' ? 'default' : 'secondary'}
+                    >
+                        {item.status === 'publicado' ? 'Publicado' : 'Borrador'}
+                    </Badge>
                 </div>
 
                 <div className="flex flex-col flex-1 p-4">

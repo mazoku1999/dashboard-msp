@@ -19,6 +19,7 @@ export interface CreateVideoDTO {
     descripcion: string;
     miniatura: string;
     categoria_id: number;
+    estado?: 'borrador' | 'publicado';
 }
 
 export interface UpdateVideoDTO {

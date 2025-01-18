@@ -209,26 +209,30 @@ const MainLayout = () => {
                                         <NewspaperIcon className="h-4 w-4 shrink-0" />
                                         {!sidebarCollapsed && <span className="ml-3">Noticias</span>}
                                     </Link>
-                                    <Link
-                                        to="/categories"
-                                        className={`flex items-center ${sidebarCollapsed ? 'justify-center px-2' : 'px-3'} py-2 rounded-lg text-sm ${location.pathname === '/categories' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:bg-accent/50'}`}
-                                    >
-                                        <TagIcon className="h-4 w-4 shrink-0" />
-                                        {!sidebarCollapsed && <span className="ml-3">Categorías</span>}
-                                    </Link>
+                                    {user?.rol_id === 1 && (
+                                        <>
+                                            <Link
+                                                to="/categories"
+                                                className={`flex items-center ${sidebarCollapsed ? 'justify-center px-2' : 'px-3'} py-2 rounded-lg text-sm ${location.pathname === '/categories' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:bg-accent/50'}`}
+                                            >
+                                                <TagIcon className="h-4 w-4 shrink-0" />
+                                                {!sidebarCollapsed && <span className="ml-3">Categorías</span>}
+                                            </Link>
+                                            <Link
+                                                to="/users"
+                                                className={`flex items-center ${sidebarCollapsed ? 'justify-center px-2' : 'px-3'} py-2 rounded-lg text-sm ${location.pathname === '/users' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:bg-accent/50'}`}
+                                            >
+                                                <UsersIcon className="h-4 w-4 shrink-0" />
+                                                {!sidebarCollapsed && <span className="ml-3">Usuarios</span>}
+                                            </Link>
+                                        </>
+                                    )}
                                     <Link
                                         to="/videos"
                                         className={`flex items-center ${sidebarCollapsed ? 'justify-center px-2' : 'px-3'} py-2 rounded-lg text-sm ${location.pathname === '/videos' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:bg-accent/50'}`}
                                     >
                                         <Youtube className="h-4 w-4 shrink-0" />
                                         {!sidebarCollapsed && <span className="ml-3">Videos</span>}
-                                    </Link>
-                                    <Link
-                                        to="/users"
-                                        className={`flex items-center ${sidebarCollapsed ? 'justify-center px-2' : 'px-3'} py-2 rounded-lg text-sm ${location.pathname === '/users' ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:bg-accent/50'}`}
-                                    >
-                                        <UsersIcon className="h-4 w-4 shrink-0" />
-                                        {!sidebarCollapsed && <span className="ml-3">Usuarios</span>}
                                     </Link>
                                 </div>
                             </div>
@@ -299,17 +303,6 @@ const MainLayout = () => {
                         </div>
 
                         <div className="flex items-center gap-4">
-                            <div className="relative hidden md:block">
-                                <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                <Input className="pl-9 w-64 bg-accent" placeholder="Buscar..." />
-                            </div>
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="text-muted-foreground"
-                            >
-                                <BellIcon className="h-5 w-5" />
-                            </Button>
                             <ModeToggle />
                         </div>
                     </div>

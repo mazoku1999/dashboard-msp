@@ -28,6 +28,7 @@ interface FormData {
     video_id?: string;
     video_titulo?: string;
     video_descripcion?: string;
+    estado?: 'borrador' | 'publicado' | 'archivado';
 }
 
 export default function NewsEditor() {
@@ -84,7 +85,8 @@ export default function NewsEditor() {
                 extracto: noticia.excerpt,
                 contenido: noticia.content,
                 imagen: noticia.image,
-                categoria_id: noticia.categoria_id
+                categoria_id: noticia.categoria_id,
+                estado: noticia.status || 'borrador'
             });
 
             if (noticia.video) {
@@ -152,44 +154,48 @@ export default function NewsEditor() {
 
     const handleSubmit = async () => {
         try {
-            // Validar campos requeridos
-            if (!formData.titulo || !formData.extracto || !formData.contenido || !formData.imagen || !formData.categoria_id) {
-                toast({
-                    variant: "destructive",
-                    title: "Error",
-                    description: "Por favor completa todos los campos requeridos"
-                });
-                return;
-            }
-
-            const noticiaData: CreateNoticiaDTO | UpdateNoticiaDTO = {
-                ...formData,
+            setLoading(true);
+            const baseDto = {
+                titulo: formData.titulo,
+                extracto: formData.extracto,
+                contenido: formData.contenido,
+                imagen: formData.imagen,
+                categoria_id: formData.categoria_id,
                 video_id: videoData.id || undefined,
                 video_titulo: videoData.title || undefined,
                 video_descripcion: videoData.description || undefined
             };
 
             if (id) {
-                await noticiaService.updateNoticia(parseInt(id), noticiaData as UpdateNoticiaDTO);
+                // Para actualizar, incluimos el estado completo
+                await noticiaService.updateNoticia(parseInt(id), {
+                    ...baseDto,
+                    estado: formData.estado
+                });
                 toast({
-                    title: "Noticia actualizada",
-                    description: "La noticia ha sido actualizada exitosamente."
+                    title: "¡Éxito!",
+                    description: "Noticia actualizada correctamente"
                 });
             } else {
-                await noticiaService.createNoticia(noticiaData as CreateNoticiaDTO);
+                // Para crear, solo permitimos borrador o publicado
+                await noticiaService.createNoticia({
+                    ...baseDto,
+                    estado: formData.estado === 'publicado' ? 'publicado' : 'borrador'
+                });
                 toast({
-                    title: "Noticia creada",
-                    description: "La noticia ha sido creada exitosamente."
+                    title: "¡Éxito!",
+                    description: "Noticia creada correctamente"
                 });
             }
             navigate('/news');
-        } catch (error: any) {
-            console.error('Error al guardar noticia:', error);
+        } catch (error) {
             toast({
                 variant: "destructive",
                 title: "Error",
-                description: error.response?.data?.message || "Ocurrió un error al guardar la noticia"
+                description: "Hubo un error al guardar la noticia"
             });
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -264,6 +270,24 @@ export default function NewsEditor() {
                                         {category.name}
                                     </SelectItem>
                                 ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-4">
+                        <Label>Estado</Label>
+                        <Select
+                            value={formData.estado || "borrador"}
+                            onValueChange={(value) => setFormData({ ...formData, estado: value as 'borrador' | 'publicado' })}
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Selecciona el estado de la noticia" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="borrador">Borrador</SelectItem>
+                                <SelectItem value="publicado">Publicado</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>

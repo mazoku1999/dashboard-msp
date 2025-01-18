@@ -32,6 +32,7 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function UsersPage() {
     const [users, setUsers] = useState<Usuario[]>([]);
@@ -54,6 +55,13 @@ export default function UsersPage() {
     const usuarioService = UsuarioService;
     const { user: currentUser } = useAuth();
     const isAdmin = currentUser?.rol_id === 1;
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!isAdmin) {
+            navigate('/dashboard');
+        }
+    }, [isAdmin, navigate]);
 
     const loadUsers = async () => {
         try {

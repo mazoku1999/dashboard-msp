@@ -2,26 +2,10 @@ import { useState, useEffect } from 'react';
 import { CategoriaService, type Categoria } from '@/services/categoria.service';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/components/ui/table';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { Pencil, Trash2, CheckCircle, XCircle, PlusCircle } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Plus, MoreVertical, Pencil, Trash2, CheckCircle, XCircle, PlusCircle } from 'lucide-react';
 import {
     Dialog,
     DialogContent,

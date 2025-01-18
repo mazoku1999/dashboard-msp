@@ -2,16 +2,12 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation, Outlet } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import {
-    SearchIcon,
     LayoutDashboardIcon,
     NewspaperIcon,
     UsersIcon,
     TagIcon,
     MenuIcon,
-    BellIcon,
-    Settings2Icon,
     LogOutIcon,
-    ChevronDownIcon,
     PanelLeftCloseIcon,
     PanelLeftOpenIcon,
     BarChart3Icon,
@@ -21,7 +17,6 @@ import {
     Youtube
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Avatar } from '@/components/ui/avatar';
 import { ModeToggle } from '@/components/mode-toggle';
 import {

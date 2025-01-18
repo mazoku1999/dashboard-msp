@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, PlusCircle, Pencil, Trash2, Mail, User as UserIcon, Power, PowerOff } from "lucide-react";
+import { PlusCircle, Pencil, Mail, User as UserIcon, Power, PowerOff } from "lucide-react";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import { useToast } from "@/components/ui/use-toast";
 import UsuarioService, { type Usuario } from "@/services/usuario.service";

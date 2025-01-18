@@ -1,8 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { RainbowButton } from "@/components/ui/rainbow-button";
+import { ArrowLeft, PlusCircle, Youtube } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { CategoriaService, type Categoria } from "@/services/categoria.service";
+import VideoService, { type Video } from "@/services/video.service";
 import {
     Select,
     SelectContent,
@@ -10,12 +16,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { ArrowLeft, PlusCircle, Youtube } from "lucide-react";
-import { RainbowButton } from "@/components/ui/rainbow-button";
-import { useToast } from "@/components/ui/use-toast";
-import VideoService, { type CreateVideoDTO, type UpdateVideoDTO } from "@/services/video.service";
-import { CategoriaService, type Categoria } from "@/services/categoria.service";
-import { Label } from "@/components/ui/label";
 
 // Función para extraer el ID de YouTube de una URL
 const getYoutubeVideoId = (url: string) => {

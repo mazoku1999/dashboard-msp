@@ -111,7 +111,7 @@ const MarkdownEditor = ({
 
     const parseContent = (markdown: string) => {
         // First convert images to HTML with our custom classes
-        const withImages = markdown.replace(/!\[(.*?)\]\((.*?)(?:\s+"(.*?)")?\)/g, (alt, src, title) => {
+        const withImages = markdown.replace(/!\[(.*?)\]\((.*?)(?:\s+"(.*?)")?\)/g, (_, alt, src, title) => {
             const titleAttr = title ? ` title="${title.replace(/"/g, '&quot;')}"` : '';
             return `<img src="${src}" alt="${alt}"${titleAttr} class="rounded-md border w-full max-w-[500px] h-auto mx-auto my-4" />`;
         });
